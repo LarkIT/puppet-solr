@@ -50,7 +50,7 @@ class solr::params (
   case $::osfamily {
       'redhat': {
         $required_packages  = ['java-1.7.0-openjdk']
-        $java_home = '/usr/lib/jvm/jre-1.7.0-openjdk.x86_64'
+        $java_home = '/usr/lib/jvm/jre-1.7.0'
 
       }
       'debian':{
