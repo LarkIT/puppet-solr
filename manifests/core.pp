@@ -4,9 +4,10 @@
 #
 # === Parameters
 #
-# [*schema_src_file*] Required
+# [*schema_src_file*]
 #   The schema file must exist on the file system and should be controlled
-#   outside of this module.  This will simply link the schema file to 
+#   outside of this module.  This will simply link the schema file to the
+#   new core conf.
 #
 # [*core_name*]
 #   The name of the core (must be unique).
@@ -21,7 +22,7 @@
 # GPL-3.0+
 #
 define solr::core (
-  $schema_src_file,
+  $schema_src_file = '',
   $core_name = $title,
   ){
 
@@ -39,16 +40,17 @@ define solr::core (
 
   exec {"${core_name}_copy_core":
     command => "/bin/cp -r ${solr::solr_home_example_dir} ${dest_dir} &&\
- /bin/rm ${schema_file} &&\
  /bin/chown -R ${solr::jetty_user}:${solr::jetty_user} ${dest_dir}",
     creates => $dest_dir,
     require => Anchor["solr::core::${core_name}::begin"],
   }
 
-  file {$schema_file:
-    ensure  => link,
-    target  => $schema_src_file,
-    require => Exec ["${core_name}_copy_core"],
+  if $schema_src_file {
+    file {$schema_file:
+      ensure  => link,
+      target  => $schema_src_file,
+      require => Exec ["${core_name}_copy_core"],
+    }
   }
 
   file {"${dest_dir}/core.properties":
