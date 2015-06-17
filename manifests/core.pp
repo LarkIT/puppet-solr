@@ -51,7 +51,14 @@ define solr::core (
       target  => $schema_src_file,
       require => Exec ["${core_name}_copy_core"],
     }
+  } else {
+    file {$schema_file:
+      ensure  => file,
+      # only here to keep require happy
+      require => Exec ["${core_name}_copy_core"],
+    }
   }
+
 
   file {"${dest_dir}/core.properties":
     ensure  => file,
