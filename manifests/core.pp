@@ -11,6 +11,11 @@
 #   path, otherwise it is assumed that it is within (solr_home)/schema/.
 #   This will simply link the schema file to the new core conf dir.
 #
+# [*conf_dir_source*]
+#   file "source" entry to a "conf" directory to be loaded into the schema.
+#   If this is not specified, the default "collection1" config will be copied.
+#   Default: undef
+#
 # [*core_name*]
 #   The name of the core (must be unique).
 #   Default: $title
@@ -24,11 +29,14 @@
 # GPL-3.0+
 #
 define solr::core (
-  $schema_src_file = '',
+  $schema_src_file = undef,
+  $conf_dir_source = undef,
   $core_name = $title,
   ){
 
-  anchor {"solr::core::${core_name}::begin":}
+  anchor {"solr::core::${core_name}::begin":
+    require => Anchor ["solr::install::end"]
+  }
 
   # The base class must be included first because core uses variables from
   # base class
@@ -37,16 +45,54 @@ define solr::core (
  resources")
   }
 
-  $dest_dir    = "${solr::solr_home}/solr/${core_name}"
-  $schema_file = "${dest_dir}/conf/schema.xml"
-
-  exec {"${core_name}_copy_core":
-    command => "/bin/cp -r ${solr::solr_home_example_dir} ${dest_dir} &&\
- /bin/chown -R ${solr::jetty_user}:${solr::jetty_user} ${dest_dir}",
-    creates => $dest_dir,
-    require => Anchor["solr::core::${core_name}::begin"],
+  if $schema_src_file and $conf_dir {
+    notice("solr::core: schema_src_file: ${schema_src_file} and conf_dir: ${conf_dir} both defined. This may not be what you intended.")
   }
 
+  $dest_dir    = "${solr::solr_home}/solr/${core_name}"
+  $conf_dir    = "${dest_dir}/conf"
+  $schema_file = "${conf_dir}/schema.xml"
+
+
+  if $conf_dir_source {
+
+    file { "${dest_dir}":
+      ensure  => directory,
+      source  => $conf_dir,
+      owner   => $solr::jetty_user,
+      group   => $solr::jetty_group,
+      require => Anchor["solr::core::${core_name}::begin"],
+    }
+
+    file { "${conf_dir}":
+      ensure  => directory,
+      source  => $conf_dir_source,
+      owner   => $solr::jetty_user,
+      group   => $solr::jetty_group,
+      recurse => true,
+      purge   => true,
+    }
+
+  } else {
+
+    exec {"${core_name}_copy_core":
+      command => "/bin/cp -r ${solr::solr_home_example_dir} ${dest_dir} &&\
+   /bin/chown -R ${solr::jetty_user}:${solr::jetty_user} ${dest_dir}",
+      creates => $dest_dir,
+      require => Anchor["solr::core::${core_name}::begin"],
+    }
+
+    # Keeping these to reduce the number of "requires"
+    file { ["${dest_dir}", "${conf_dir}"]:
+      ensure  => directory,
+      owner   => $solr::jetty_user,
+      group   => $solr::jetty_group,
+      require => Exec ["${core_name}_copy_core"],
+    }
+
+  }
+
+  # Symlink schema (optional)
   if $schema_src_file {
     if $schema_src_file =~ /^\// {
       $_schema_src_file = $schema_src_file
@@ -56,7 +102,6 @@ define solr::core (
     file {$schema_file:
       ensure  => link,
       target  => $_schema_src_file,
-      require => Exec ["${core_name}_copy_core"],
     }
   } else {
     file {$schema_file:
@@ -66,11 +111,10 @@ define solr::core (
     }
   }
 
-
+  # Set corename
   file {"${dest_dir}/core.properties":
     ensure  => file,
     content => inline_template("name=${core_name}\n"),
-    require => File[$schema_file],
   }
 
   anchor {"solr::core::${core_name}::end":
