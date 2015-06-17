@@ -19,7 +19,7 @@
 # GPL-3.0+
 #
 class solr::install {
-  
+
   anchor{'solr::install::begin':}
   # install requirements
   ensure_packages($solr::params::required_packages)
@@ -33,7 +33,7 @@ class solr::install {
     require    => [ Package[$solr::params::required_packages],
                     Anchor['solr::install::begin']],
   }
-  
+
   # download and unpackage solr
   archive { 'solr':
     ensure           => present,
@@ -55,7 +55,7 @@ ${solr::solr_home}",
     refreshonly => true,
     subscribe   => Archive['solr'],
   }
-  
+
   # change permissions
   exec {'change permissions':
     command     => "/bin/chown ${solr::jetty_user}:${solr::jetty_user} -R\
@@ -70,7 +70,7 @@ ${solr::solr_home}",
     group   => $solr::jetty_user,
     require => Exec['change permissions'],
   }
-  
+
   # move collection1 to example directory
   exec {'move collection1':
     command => "/bin/mv ${solr::solr_home}/solr/collection1\
@@ -85,14 +85,6 @@ ${solr::solr_home}",
     owner   => $solr::jetty_user,
     group   => $solr::jetty_user,
     require => Exec['change permissions'],
-  }
-  
-  # move collection1 to example directory
-  exec {'move collection1':
-    command => "/bin/mv ${solr::solr_home}/solr/collection1\
- ${solr::solr_home_example_dir}",
-    creates => $solr::solr_home_example_dir,
-    require => File ["${solr::solr_home}/example"],
   }
 
   anchor{'solr::install::end':
