@@ -62,7 +62,7 @@ define solr::core (
 
   file {"${dest_dir}/core.properties":
     ensure  => file,
-    content => inline_template("name=${core_name}"),
+    content => inline_template("name=${core_name}\n"),
     require => File[$schema_file],
   }
 
