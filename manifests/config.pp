@@ -16,7 +16,7 @@
 # GPL-3.0+
 #
 class solr::config {
-  
+
   anchor{'solr::config::begin':}
 
   # make OS specific changes
@@ -41,7 +41,7 @@ class solr::config {
 redhat based system")
     }
   }
-  
+
   # create the conf directory
   file {$solr::solr_home_conf:
     ensure  => directory,
@@ -71,6 +71,32 @@ redhat based system")
     ensure  => file,
     content => template('solr/jetty.erb'),
     require => File ["${solr::solr_home}/etc/jetty-logging.xml"],
+  }
+
+  if versioncmp($solr::version, '4.4.0') < 0 {
+    # VERY old Solr needs solr.xml to contain cores
+    concat {"${solr::solr_home}/solr/solr.xml":
+      ensure => present,
+      owner  => $solr::jetty_user,
+      group  => $solr::jetty_group,
+      mode   => '0644',
+      notify => Service['jetty'],
+    }
+
+    concat_fragment {'solr.xml-header':
+      target => "${solr::solr_home}/solr/solr.xml",
+      source => 'puppet:///modules/solr/_solr.xml_header',
+      order  => '01',
+    }
+
+    #ensure_resource('solr::core', "default_${solr::solr_hostname}")
+
+    concat_fragment {'solr.xml-footer':
+      target  => "${solr::solr_home}/solr/solr.xml",
+      content => "  </cores>\n</solr>\n",
+      order   => '99',
+    }
+
   }
 
   # setup the service level entry
