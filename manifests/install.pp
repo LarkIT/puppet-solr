@@ -43,7 +43,7 @@ class solr::install {
     target           => '/opt',
     follow_redirects => true,
     extension        => 'tgz',
-    checksum         => true,
+    checksum         => false,
     timeout          => $solr::timeout,
     require          => User[$solr::jetty_user],
   }
@@ -54,7 +54,7 @@ class solr::install {
     command     => "/bin/cp -r ${solr::solr_home_src}/example \
 ${solr::solr_home}",
     refreshonly => true,
-    subscribe   => Archive['solr'],
+    subscribe   => Archive[$solr_download],
   }
 
   # change permissions
