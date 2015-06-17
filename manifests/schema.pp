@@ -55,8 +55,6 @@ define solr::schema (
     mode    => '0644',
     source  => $source,
     content => $content,
-    # For the default parent directory
-    require => Package['openvpn'],
   }
 
 }
