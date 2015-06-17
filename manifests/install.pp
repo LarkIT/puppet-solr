@@ -20,7 +20,7 @@
 #
 class solr::install {
 
-  $solr_download = "solr-${solr::version}.tgz"
+  $solr_download = "solr-${solr::version}"
 
   anchor{'solr::install::begin':}
   # install requirements
@@ -39,11 +39,11 @@ class solr::install {
   # download and unpackage solr
   archive { $solr_download:
     ensure           => present,
-    url              => "${solr::url}/${solr::version}/${solr_download}",
+    url              => "${solr::url}/${solr::version}/${solr_download}.tgz",
     target           => '/opt',
     follow_redirects => true,
     extension        => 'tgz',
-    checksum         => false,
+    checksum         => true,
     timeout          => $solr::timeout,
     require          => User[$solr::jetty_user],
   }
