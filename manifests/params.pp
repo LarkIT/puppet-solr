@@ -39,12 +39,13 @@
 class solr::params (
 ){
 
-  $url        = 'http://mirrors.gigenet.com/apache/lucene/solr'
-  $version    = '4.10.3'
-  $jetty_user = 'solr'
-  $jetty_host = '127.0.0.1'
-  $jetty_port = '8983'
-  $timeout    = '120'
+  $url         = 'http://mirrors.gigenet.com/apache/lucene/solr'
+  $version     = '4.10.3'
+  $jetty_user  = 'solr'
+  $jetty_group = 'solr'
+  $jetty_host  = '127.0.0.1'
+  $jetty_port  = '8983'
+  $timeout     = '120'
 
   # OS Specific configuration
   case $::osfamily {
