@@ -83,7 +83,7 @@ redhat based system")
       notify => Service['jetty'],
     }
 
-    concat_fragment {'solr.xml-header':
+    concat::fragment {'solr.xml-header':
       target => "${solr::solr_home}/solr/solr.xml",
       source => 'puppet:///modules/solr/_solr.xml_header',
       order  => '01',
@@ -91,7 +91,7 @@ redhat based system")
 
     #ensure_resource('solr::core', "default_${solr::solr_hostname}")
 
-    concat_fragment {'solr.xml-footer':
+    concat::fragment {'solr.xml-footer':
       target  => "${solr::solr_home}/solr/solr.xml",
       content => "  </cores>\n</solr>\n",
       order   => '99',

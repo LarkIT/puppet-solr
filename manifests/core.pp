@@ -112,7 +112,7 @@ define solr::core (
 
   if versioncmp($solr::version, '4.4.0') < 0 {
     # VERY old Solr needs solr.xml to contain cores
-    concat_fragment {"solr.xml-${core_name}":
+    concat::fragment {"solr.xml-${core_name}":
       target  => "${solr::solr_home}/solr/solr.xml",
       content => "     <core name=\"${core_name}\" instanceDir=\"${core_name}\" />",
       order   => '10',
