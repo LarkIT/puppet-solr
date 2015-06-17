@@ -103,12 +103,6 @@ define solr::core (
       ensure  => link,
       target  => $_schema_src_file,
     }
-  } else {
-    file {$schema_file:
-      ensure  => file,
-      # only here to keep require happy
-      require => Exec ["${core_name}_copy_core"],
-    }
   }
 
   # Set corename
