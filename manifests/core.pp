@@ -114,7 +114,7 @@ define solr::core (
     # VERY old Solr needs solr.xml to contain cores
     concat::fragment {"solr.xml-${core_name}":
       target  => "${solr::solr_home}/solr/solr.xml",
-      content => "     <core name=\"${core_name}\" instanceDir=\"${core_name}\" />",
+      content => "     <core name=\"${core_name}\" instanceDir=\"${core_name}\" />\n",
       order   => '10',
     }
   }
