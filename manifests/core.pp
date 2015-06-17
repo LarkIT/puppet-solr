@@ -58,7 +58,6 @@ define solr::core (
 
     file { "${dest_dir}":
       ensure  => directory,
-      source  => $conf_dir,
       owner   => $solr::jetty_user,
       group   => $solr::jetty_group,
       require => Anchor["solr::core::${core_name}::begin"],
