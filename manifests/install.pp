@@ -79,6 +79,22 @@ ${solr::solr_home}",
     require => File ["${solr::solr_home}/example"],
   }
 
+  # setup schema folder
+  file {"${solr::solr_home}/schema":
+    ensure  => directory,
+    owner   => $solr::jetty_user,
+    group   => $solr::jetty_user,
+    require => Exec['change permissions'],
+  }
+  
+  # move collection1 to example directory
+  exec {'move collection1':
+    command => "/bin/mv ${solr::solr_home}/solr/collection1\
+ ${solr::solr_home_example_dir}",
+    creates => $solr::solr_home_example_dir,
+    require => File ["${solr::solr_home}/example"],
+  }
+
   anchor{'solr::install::end':
     require => Exec['move collection1'],
   }

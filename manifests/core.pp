@@ -5,9 +5,11 @@
 # === Parameters
 #
 # [*schema_src_file*]
-#   The schema file must exist on the file system and should be controlled
-#   outside of this module.  This will simply link the schema file to the
-#   new core conf.
+#   The schema file must exist on the file system and may be controlled
+#   outside of this module. You may also use solr::schema to create the
+#   schema file. If it starts with a "/" it is assumed that it is a full
+#   path, otherwise it is assumed that it is within (solr_home)/schema/.
+#   This will simply link the schema file to the new core conf dir.
 #
 # [*core_name*]
 #   The name of the core (must be unique).
@@ -46,6 +48,11 @@ define solr::core (
   }
 
   if $schema_src_file {
+    if $schema_src_file =~ /^\// {
+      $_schema_src_file = $schema_src_file
+    } else {
+      $_schema_src_file = "${solr::solr_home}/schema/${schema_src_file}"
+    }
     file {$schema_file:
       ensure  => link,
       target  => $schema_src_file,
