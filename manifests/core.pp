@@ -55,7 +55,7 @@ define solr::core (
     }
     file {$schema_file:
       ensure  => link,
-      target  => $schema_src_file,
+      target  => $_schema_src_file,
       require => Exec ["${core_name}_copy_core"],
     }
   } else {
