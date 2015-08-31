@@ -43,7 +43,7 @@ class solr::install {
     target           => '/opt',
     follow_redirects => true,
     extension        => 'tgz',
-    checksum         => true,
+    checksum         => false,
     timeout          => $solr::timeout,
     require          => User[$solr::jetty_user],
   }
