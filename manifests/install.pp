@@ -41,7 +41,7 @@ class solr::install {
     ensure           => present,
     url              => "${solr::url}/${solr::version}/${solr_download}.tgz",
     target           => '/opt',
-    #follow_redirects => true,
+    follow_redirects => true,
     extension        => 'tgz',
     checksum         => true,
     timeout          => $solr::timeout,
