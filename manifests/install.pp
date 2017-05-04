@@ -40,9 +40,7 @@ class solr::install {
   archive::download { $solr_download:
     ensure           => present,
     url              => "${solr::url}/${solr::version}/${solr_download}.tgz",
-    target           => '/opt',
     follow_redirects => true,
-    extension        => 'tgz',
     checksum         => true,
     timeout          => $solr::timeout,
     require          => User[$solr::jetty_user],
