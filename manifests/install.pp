@@ -37,7 +37,7 @@ class solr::install {
   }
 
   # download and unpackage solr
-  archive { $solr_download:
+  archive::download { $solr_download:
     ensure           => present,
     url              => "${solr::url}/${solr::version}/${solr_download}.tgz",
     target           => '/opt',
