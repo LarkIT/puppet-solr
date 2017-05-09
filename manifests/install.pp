@@ -37,11 +37,14 @@ class solr::install {
   }
 
   # download and unpackage solr
+  # WARNING: THIS IS DISTINCT FROM camptocamp's archive class!!!
   archive::download { $solr_download:
     ensure           => present,
     url              => "${solr::url}/${solr::version}/${solr_download}.tgz",
     follow_redirects => true,
     checksum         => true,
+    digest_type      => 'md5',
+    digest_url       => "${solr::url}/${solr::version}/${solr_download}.tgz.md5",
     timeout          => $solr::timeout,
     require          => User[$solr::jetty_user],
   }
