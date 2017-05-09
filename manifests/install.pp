@@ -52,7 +52,7 @@ class solr::install {
     command     => "/bin/cp -r ${solr::solr_home_src}/example \
 ${solr::solr_home}",
     refreshonly => true,
-    subscribe   => Archive::download[$solr_download],
+    subscribe   => Archive::Download[$solr_download],
   }
 
   # change permissions
