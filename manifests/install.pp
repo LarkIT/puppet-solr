@@ -18,7 +18,9 @@
 #
 # GPL-3.0+
 #
-class solr::install {
+class solr::install (
+  $checksum_enabled = false,  
+){
 
   $solr_download = "solr-${solr::version}"
 
@@ -37,13 +39,15 @@ class solr::install {
   }
 
   # download and unpackage solr
-  archive { $solr_download:
+  # WARNING: THIS IS DISTINCT FROM camptocamp's archive class!!!
+  archive::download { $solr_download:
     ensure           => present,
     url              => "${solr::url}/${solr::version}/${solr_download}.tgz",
-    target           => '/opt',
     follow_redirects => true,
     extension        => 'tgz',
-    checksum         => false,
+    checksum         => $checksum_enabled,
+    digest_type      => 'md5',
+    digest_url       => "${solr::url}/${solr::version}/${solr_download}.tgz.md5",
     timeout          => $solr::timeout,
     require          => User[$solr::jetty_user],
   }
@@ -54,7 +58,7 @@ class solr::install {
     command     => "/bin/cp -r ${solr::solr_home_src}/example \
 ${solr::solr_home}",
     refreshonly => true,
-    subscribe   => Archive[$solr_download],
+    subscribe   => Archive::Download[$solr_download],
   }
 
   # change permissions
