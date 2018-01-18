@@ -19,7 +19,7 @@
 # GPL-3.0+
 #
 class solr::install (
-  $checksum_enabled = $false,  
+  $checksum_enabled = false,  
 ){
 
   $solr_download = "solr-${solr::version}"
