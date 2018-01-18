@@ -18,7 +18,9 @@
 #
 # GPL-3.0+
 #
-class solr::install {
+class solr::install (
+  $checksum_enabled = $false,  
+){
 
   $solr_download = "solr-${solr::version}"
 
@@ -42,7 +44,8 @@ class solr::install {
     ensure           => present,
     url              => "${solr::url}/${solr::version}/${solr_download}.tgz",
     follow_redirects => true,
-    checksum         => true,
+    extension        => 'tgz',
+    checksum         => $checksum_enabled,
     digest_type      => 'md5',
     digest_url       => "${solr::url}/${solr::version}/${solr_download}.tgz.md5",
     timeout          => $solr::timeout,
