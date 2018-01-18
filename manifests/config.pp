@@ -70,7 +70,7 @@ redhat based system")
   file {'/etc/default/jetty':
     ensure  => file,
     content => template('solr/jetty.erb'),
-    require => File ["${solr::solr_home}/etc/jetty-logging.xml"],
+    require => File["${solr::solr_home}/etc/jetty-logging.xml"],
   }
 
   if versioncmp($solr::version, '4.4.0') < 0 {
@@ -104,22 +104,22 @@ redhat based system")
     ensure  => file,
     mode    => '0755',
     content => template('solr/jetty.sh.erb'),
-    require => File ['/etc/default/jetty'],
+    require => File['/etc/default/jetty'],
   }
 
   # log file for jetty
   file {'/var/log/jetty':
     ensure  => directory,
-    require => File ['/etc/init.d/jetty'],
+    require => File['/etc/init.d/jetty'],
   }
 
   file {'/var/cache/jetty':
     ensure  => directory,
-    require => File ['/var/log/jetty'],
+    require => File['/var/log/jetty'],
   }
 
   anchor {'solr::config::end':
-    require => File ['/var/cache/jetty'],
+    require => File['/var/cache/jetty'],
   }
 
 }

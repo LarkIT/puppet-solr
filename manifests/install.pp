@@ -81,7 +81,7 @@ ${solr::solr_home}",
     command => "/bin/mv ${solr::solr_home}/solr/collection1\
  ${solr::solr_home_example_dir}",
     creates => $solr::solr_home_example_dir,
-    require => File ["${solr::solr_home}/example"],
+    require => File["${solr::solr_home}/example"],
   }
 
   # setup schema folder

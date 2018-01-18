@@ -20,6 +20,6 @@ class solr::service {
     subscribe => File["${solr::solr_home}/solr"]
   }
   anchor {'solr::service::end':
-    require => Service ['jetty'],
+    require => Service['jetty'],
   }
 }
