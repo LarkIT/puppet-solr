@@ -60,26 +60,27 @@
 # GPL-3.0+
 #
 class solr (
-  $url        = $solr::params::url,
-  $version    = $solr::params::version,
-  $jetty_user = $solr::params::jetty_user,
-  $jetty_host = $solr::params::jetty_host,
-  $jetty_port = $solr::params::jetty_port,
-  $timeout    = $solr::params::timeout,
+  $url         = $solr::params::url,
+  $version     = $solr::params::version,
+  $jetty_user  = $solr::params::jetty_user,
+  $jetty_group = $solr::params::jetty_group,
+  $jetty_host  = $solr::params::jetty_host,
+  $jetty_port  = $solr::params::jetty_port,
+  $timeout     = $solr::params::timeout,
 ) inherits ::solr::params{
-  
+
   ## === Variables === ##
   $solr_home      = '/opt/solr'
   $solr_home_conf = "${solr_home}/conf"
-  $solr_home_src  = "/opt/solr-${solr::params::version}"
+  $solr_home_src  = "/opt/solr-${version}"
   $solr_home_example_dir = "${solr_home}/example/collection1"
-  
+
   anchor{'solr::begin':}
 
   class{'solr::install':
     require => Anchor['solr::begin'],
   }
-  
+
   class{'solr::config':
     require => Class['solr::install'],
   }
@@ -87,7 +88,7 @@ class solr (
   class{'solr::service':
     subscribe => Class['solr::config'],
   }
-  
+
   anchor{'solr::end':
     require => Class['solr::service'],
   }
