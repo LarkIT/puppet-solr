@@ -35,7 +35,7 @@ define solr::core (
   ){
 
   anchor {"solr::core::${core_name}::begin":
-    require => Anchor ["solr::install::end"]
+    require => Anchor["solr::install::end"]
   }
 
   # The base class must be included first because core uses variables from
@@ -86,7 +86,7 @@ define solr::core (
       ensure  => directory,
       owner   => $solr::jetty_user,
       group   => $solr::jetty_group,
-      require => Exec ["${core_name}_copy_core"],
+      require => Exec["${core_name}_copy_core"],
     }
 
   }
@@ -120,6 +120,6 @@ define solr::core (
   }
 
   anchor {"solr::core::${core_name}::end":
-    require => File ["${dest_dir}/core.properties"],
+    require => File["${dest_dir}/core.properties"],
   }
 }
