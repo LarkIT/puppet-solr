@@ -39,12 +39,12 @@ class solr::install (
   }
 
   # download and unpackage solr
-  # WARNING: THIS IS DISTINCT FROM camptocamp's archive class!!!
+  # WARNING: THIS IS DISTINCT FROM camptocamp's archive class!!! - or is it? 
   archive::download { $solr_download:
     ensure           => present,
     url              => "${solr::url}/${solr::version}/${solr_download}.tgz",
     follow_redirects => true,
-    extension        => 'tgz',
+    #extension        => 'tgz',
     checksum         => $checksum_enabled,
     digest_type      => 'md5',
     digest_url       => "${solr::url}/${solr::version}/${solr_download}.tgz.md5",
