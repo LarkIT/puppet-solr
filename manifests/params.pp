@@ -45,7 +45,7 @@ class solr::params (
   $jetty_group = 'solr'
   $jetty_host  = '127.0.0.1'
   $jetty_port  = '8983'
-  $timeout     = '120'
+  $timeout     = 120
 
   # OS Specific configuration
   case $::osfamily {
